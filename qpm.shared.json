@@ -10,6 +10,7 @@
       "version": "2.9.4",
       "url": "https://github.com/bsq-ports/Chroma",
       "additionalData": {
+        "cmake": true,
         "headersOnly": true,
         "overrideSoName": "libchroma.so"
       }
@@ -53,7 +54,7 @@
       },
       {
         "id": "bs-cordl",
-        "versionRange": "4007.*",
+        "versionRange": "4006.*",
         "additionalData": {
           "includeQmod": true,
           "private": true
@@ -142,10 +143,10 @@
     {
       "dependency": {
         "id": "bs-cordl",
-        "versionRange": "=4007.0.0",
+        "versionRange": "=4006.0.0",
         "additionalData": {
           "headersOnly": true,
-          "branchName": "version/v4007_0_0",
+          "branchName": "version/v4006_0_0",
           "compileOptions": {
             "includePaths": [
               "include"
@@ -161,7 +162,7 @@
           }
         }
       },
-      "version": "4007.0.0"
+      "version": "4006.0.0"
     },
     {
       "dependency": {
@@ -186,7 +187,7 @@
           "soLink": "https://github.com/bsq-ports/Tracks/releases/download/v2.4.3/libtracks.so",
           "debugSoLink": "https://github.com/bsq-ports/Tracks/releases/download/v2.4.3/debug_libtracks.so",
           "overrideSoName": "libtracks.so",
-          "modLink": "https://github.com/bsq-ports/Tracks/releases/download/v2.4.3/Tracks.qmod",
+          "modLink": "https://github.com/bsq-ports/Tracks/releases/download/v2.4.3/Tracks.qmode",
           "branchName": "version/v2_4_3",
           "cmake": true
         }

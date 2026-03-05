@@ -14,6 +14,7 @@
 #include "utils/ChromaUtils.hpp"
 
 #include "UnityEngine/Resources.hpp"
+#include "UnityEngine/Quaternion.hpp"
 #include "UnityEngine/SceneManagement/Scene.hpp"
 #include "UnityEngine/Transform.hpp"
 #include "UnityEngine/SceneManagement/SceneManager.hpp"
@@ -24,7 +25,6 @@
 #include "tracks/shared/Animation/GameObjectTrackController.hpp"
 #include "tracks/shared/AssociatedData.h"
 #include "tracks/shared/Animation/PointDefinition.h"
-#include "tracks/shared/Animation/TransformData.hpp"
 
 #include "boost-regex/regex/include/boost/regex.hpp"
 
@@ -125,6 +125,47 @@ static std::optional<Sombrero::FastVector3> GetVectorData(rapidjson::Value const
 
   return Sombrero::FastVector3{ objectsVal[0].GetFloat(), objectsVal[1].GetFloat(), objectsVal[2].GetFloat() };
 }
+
+struct TransformData {
+  std::optional<Sombrero::FastVector3> position;
+  std::optional<Sombrero::FastVector3> localPosition;
+  std::optional<Sombrero::FastVector3> rotation;
+  std::optional<Sombrero::FastVector3> localRotation;
+  std::optional<Sombrero::FastVector3> scale;
+
+  explicit TransformData(rapidjson::Value const& dynData, bool v2) {
+    position = GetVectorData(dynData, v2 ? "_position" : "position");
+    localPosition = GetVectorData(dynData, v2 ? Chroma::NewConstants::V2_LOCAL_POSITION : Chroma::NewConstants::LOCAL_POSITION);
+    rotation = GetVectorData(dynData, v2 ? Chroma::OldConstants::OBJECTROTATION : Chroma::NewConstants::RING_ROTATION);
+    localRotation = GetVectorData(dynData, v2 ? Chroma::OldConstants::LOCALROTATION : "localRotation");
+    scale = GetVectorData(dynData, v2 ? "_scale" : "scale");
+  }
+
+  void Apply(UnityEngine::Transform* transform, bool leftHanded, bool v2) const {
+    if (!transform) {
+      return;
+    }
+
+    (void) leftHanded;
+    (void) v2;
+
+    if (position) {
+      transform->set_position(*position);
+    }
+    if (localPosition) {
+      transform->set_localPosition(*localPosition);
+    }
+    if (rotation) {
+      transform->set_rotation(UnityEngine::Quaternion::Euler(*rotation));
+    }
+    if (localRotation) {
+      transform->set_localRotation(UnityEngine::Quaternion::Euler(*localRotation));
+    }
+    if (scale) {
+      transform->set_localScale(*scale);
+    }
+  }
+};
 
 
 void EnvironmentEnhancementManager::GetAllGameObjects() {
@@ -333,7 +374,7 @@ void EnvironmentEnhancementManager::Init(CustomJSONData::CustomBeatmapData* cust
       ChromaLogger::Logger.info("=====================================");
     }
 
-    Tracks::TransformData spawnData(gameObjectDataVal, v2);
+    TransformData spawnData(gameObjectDataVal, v2);
 
     std::optional<int> dupeAmount =
         getIfExists<int>(gameObjectDataVal, v2 ? NewConstants::V2_DUPLICATION_AMOUNT : NewConstants::DUPLICATION_AMOUNT);

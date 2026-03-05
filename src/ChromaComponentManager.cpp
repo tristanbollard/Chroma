@@ -38,8 +38,23 @@ struct CoroutineInfo {
   Functions easing;
 };
 
+struct TrackWHash {
+  std::size_t operator()(TrackW const& track) const noexcept {
+    auto trackHash = std::hash<Tracks::ffi::Track*>{}(track.track);
+    auto contextHash = std::hash<Tracks::ffi::TracksContext*>{}(track.internal_tracks_context);
+    auto v2Hash = std::hash<bool>{}(track.v2);
+    return trackHash ^ (contextHash << 1) ^ (v2Hash << 2);
+  }
+};
+
+struct TrackWEqual {
+  bool operator()(TrackW const& a, TrackW const& b) const noexcept {
+    return a.track == b.track && a.internal_tracks_context == b.internal_tracks_context && a.v2 == b.v2;
+  }
+};
+
 // PROPERTY NAME -> TRACKFORGAMEOBJECTS & CORO
-static std::unordered_map<std::string, std::unordered_map<TrackW, CoroutineInfo>> coroutines;
+static std::unordered_map<std::string, std::unordered_map<TrackW, CoroutineInfo, TrackWHash, TrackWEqual>> coroutines;
 
 void animateBloomFog(std::string_view propName, std::span<UnityEngine::Component* const> components, float val) {
   if (components.empty()) {

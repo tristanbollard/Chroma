@@ -4,6 +4,18 @@ Is based on Chroma PC v2.5.0 as of this time
 
 Colors!
 
+## Compatibility
+
+- Target Beat Saber version: `1.40.6_6407`
+- Codegen target: `bs-cordl 4006.*`
+
+If you are switching from a different game version, run dependency restore before building so the correct codegen is used.
+
+### Build steps
+
+1. `qpm restore`
+2. `qpm s build`
+
 ## Background not visible
 Is the background not visible (related to #26)? make sure all the environment effects are turned on (located under `Player Settings`).
 

@@ -9,6 +9,7 @@
     "version": "2.9.4",
     "url": "https://github.com/bsq-ports/Chroma",
     "additionalData": {
+      "cmake": true,
       "headersOnly": true,
       "overrideSoName": "libchroma.so"
     }
@@ -52,7 +53,7 @@
     },
     {
       "id": "bs-cordl",
-      "versionRange": "4007.*",
+      "versionRange": "4006.*",
       "additionalData": {
         "includeQmod": true,
         "private": true
